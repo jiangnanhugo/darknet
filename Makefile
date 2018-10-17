@@ -1,5 +1,7 @@
-GPU=0
-CUDNN=0
+GPU=1
+CUDNN=1
+INCLUDE_APTH=/beluga-scratch/apps/cuda/cuda-8.0/include/
+LIB_PATH=/beluga-scratch/apps/cuda/cuda-8.0/lib64/
 OPENCV=0
 OPENMP=0
 DEBUG=0
@@ -26,7 +28,7 @@ AR=ar
 ARFLAGS=rcs
 OPTS=-Ofast
 LDFLAGS= -lm -pthread 
-COMMON= -Iinclude/ -Isrc/
+COMMON=-Iinclude/  -Isrc 
 CFLAGS=-Wall -Wno-unused-result -Wno-unknown-pragmas -Wfatal-errors -fPIC
 
 ifeq ($(OPENMP), 1) 
@@ -47,11 +49,10 @@ COMMON+= `pkg-config --cflags opencv`
 endif
 
 ifeq ($(GPU), 1) 
-COMMON+= -DGPU -I/usr/local/cuda/include/
+COMMON+= -DGPU -I/beluga-scratch/apps/cuda/cuda-8.0/include/
 CFLAGS+= -DGPU
-LDFLAGS+= -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lcurand
+LDFLAGS+= -L/beluga-scratch/apps/cuda/cuda-8.0/lib64/ -lcuda -lcudart -lcublas -lcurand
 endif
-
 ifeq ($(CUDNN), 1) 
 COMMON+= -DCUDNN 
 CFLAGS+= -DCUDNN
@@ -69,7 +70,7 @@ EXECOBJ = $(addprefix $(OBJDIR), $(EXECOBJA))
 OBJS = $(addprefix $(OBJDIR), $(OBJ))
 DEPS = $(wildcard src/*.h) Makefile include/darknet.h
 
-all: obj backup results $(SLIB) $(ALIB) $(EXEC)
+all:obj backup results $(SLIB) $(ALIB) $(EXEC)
 #all: obj  results $(SLIB) $(ALIB) $(EXEC)
 
 
